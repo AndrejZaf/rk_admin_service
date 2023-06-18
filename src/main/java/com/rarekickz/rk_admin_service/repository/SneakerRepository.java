@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SneakerRepository extends JpaRepository<Sneaker, Long> {
@@ -13,4 +14,6 @@ public interface SneakerRepository extends JpaRepository<Sneaker, Long> {
     @Query("SELECT s FROM sneaker s " +
             "LEFT JOIN FETCH s.sneakerImages")
     List<Sneaker> findAllSneakersWithImages();
+
+    Optional<Sneaker> findBySpecialTrue();
 }

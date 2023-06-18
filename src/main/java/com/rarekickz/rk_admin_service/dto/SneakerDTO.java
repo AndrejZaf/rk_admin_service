@@ -28,4 +28,6 @@ public class SneakerDTO {
     private List<SneakerSizeDTO> sizes;
 
     private String brand;
+
+    private Boolean special;
 }

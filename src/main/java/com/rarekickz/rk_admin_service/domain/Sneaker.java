@@ -52,7 +52,7 @@ public class Sneaker {
 
     @NotNull
     @Column(name = "is_special")
-    private boolean isSpecial = false;
+    private boolean special = false;
 
     @NotNull
     @Column(name = "gender")

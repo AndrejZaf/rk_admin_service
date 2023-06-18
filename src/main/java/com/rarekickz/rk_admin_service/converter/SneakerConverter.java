@@ -26,6 +26,7 @@ public class SneakerConverter {
                 .name(sneaker.getName())
                 .images(convertToStringImages(sneaker.getSneakerImages()))
                 .sizes(convertToSneakerSizeDTO(sneaker.getSneakerSizes()))
+                .special(sneaker.isSpecial())
                 .build();
     }
 

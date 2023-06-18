@@ -4,7 +4,6 @@ import com.rarekickz.rk_admin_service.domain.Brand;
 import com.rarekickz.rk_admin_service.domain.Sneaker;
 import com.rarekickz.rk_admin_service.domain.SneakerImage;
 import com.rarekickz.rk_admin_service.domain.SneakerSize;
-import com.rarekickz.rk_admin_service.dto.IdListDTO;
 import com.rarekickz.rk_admin_service.dto.SneakerDTO;
 import com.rarekickz.rk_admin_service.enums.Gender;
 import com.rarekickz.rk_admin_service.repository.SneakerRepository;
@@ -19,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +75,25 @@ public class SneakerServiceImpl implements SneakerService {
         sneakerRepository.delete(sneaker);
     }
 
+    @Override
+    public void premiumSneaker(final Long sneakerId) {
+        final Sneaker newSpecialSneaker = sneakerRepository.findById(sneakerId).orElseThrow(EntityNotFoundException::new);
+        if(newSpecialSneaker.isSpecial()) {
+            return;
+        }
+
+        newSpecialSneaker.setSpecial(true);
+        final Optional<Sneaker> previousSpecialSneaker = sneakerRepository.findBySpecialTrue();
+        if (previousSpecialSneaker.isPresent()) {
+            final Sneaker sneaker = previousSpecialSneaker.get();
+            sneaker.setSpecial(false);
+            sneakerRepository.saveAll(List.of(newSpecialSneaker, sneaker));
+            return;
+        }
+
+        sneakerRepository.save(newSpecialSneaker);
+    }
+
     private Sneaker createSneaker(final SneakerDTO sneakerDTO, final Brand brand) {
         return Sneaker.builder()
                 .brand(brand)
@@ -84,7 +102,7 @@ public class SneakerServiceImpl implements SneakerService {
                 .price(sneakerDTO.getPrice())
                 .gender(Gender.values()[sneakerDTO.getGender()])
                 .sneakerImages(new HashSet<>())
-                .isSpecial(false)
+                .special(false)
                 .build();
     }
 

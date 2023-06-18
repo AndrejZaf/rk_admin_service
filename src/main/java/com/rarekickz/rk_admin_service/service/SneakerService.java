@@ -15,4 +15,6 @@ public interface SneakerService {
     List<Sneaker> findAllSneakers();
 
     void deleteSneaker(Long sneakerId);
+
+    void premiumSneaker(Long sneakerId);
 }
