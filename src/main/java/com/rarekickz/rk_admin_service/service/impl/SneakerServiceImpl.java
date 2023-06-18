@@ -4,6 +4,7 @@ import com.rarekickz.rk_admin_service.domain.Brand;
 import com.rarekickz.rk_admin_service.domain.Sneaker;
 import com.rarekickz.rk_admin_service.domain.SneakerImage;
 import com.rarekickz.rk_admin_service.domain.SneakerSize;
+import com.rarekickz.rk_admin_service.dto.IdListDTO;
 import com.rarekickz.rk_admin_service.dto.SneakerDTO;
 import com.rarekickz.rk_admin_service.enums.Gender;
 import com.rarekickz.rk_admin_service.repository.SneakerRepository;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +65,21 @@ public class SneakerServiceImpl implements SneakerService {
     @Transactional
     public List<Sneaker> findAllSneakers() {
         return sneakerRepository.findAllSneakersWithImages();
+    }
+
+    @Override
+    @Transactional
+    public void deleteSneaker(final IdListDTO idListDTO) {
+        final List<Sneaker> sneakers = sneakerRepository.findAllById(idListDTO.getIds());
+        final Set<SneakerSize> sneakerSizes = sneakers.stream()
+                .flatMap(sneaker -> sneaker.getSneakerSizes().stream())
+                .collect(Collectors.toSet());
+        final Set<SneakerImage> sneakerImages = sneakers.stream()
+                .flatMap(sneaker -> sneaker.getSneakerImages().stream())
+                .collect(Collectors.toSet());
+        sneakerSizeService.deleteSneakerSizes(sneakerSizes);
+        sneakerImageService.deleteSneakerImages(sneakerImages);
+        sneakerRepository.deleteAll(sneakers);
     }
 
     private Sneaker createSneaker(final SneakerDTO sneakerDTO, final Brand brand) {
