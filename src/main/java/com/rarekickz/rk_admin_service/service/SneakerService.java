@@ -14,5 +14,5 @@ public interface SneakerService {
 
     List<Sneaker> findAllSneakers();
 
-    void deleteSneaker(IdListDTO idListDTO);
+    void deleteSneaker(Long sneakerId);
 }

@@ -69,17 +69,11 @@ public class SneakerServiceImpl implements SneakerService {
 
     @Override
     @Transactional
-    public void deleteSneaker(final IdListDTO idListDTO) {
-        final List<Sneaker> sneakers = sneakerRepository.findAllById(idListDTO.getIds());
-        final Set<SneakerSize> sneakerSizes = sneakers.stream()
-                .flatMap(sneaker -> sneaker.getSneakerSizes().stream())
-                .collect(Collectors.toSet());
-        final Set<SneakerImage> sneakerImages = sneakers.stream()
-                .flatMap(sneaker -> sneaker.getSneakerImages().stream())
-                .collect(Collectors.toSet());
-        sneakerSizeService.deleteSneakerSizes(sneakerSizes);
-        sneakerImageService.deleteSneakerImages(sneakerImages);
-        sneakerRepository.deleteAll(sneakers);
+    public void deleteSneaker(final Long sneakerId) {
+        final Sneaker sneaker = sneakerRepository.findById(sneakerId).orElseThrow(EntityNotFoundException::new);
+        sneakerSizeService.deleteSneakerSizes(sneaker.getSneakerSizes());
+        sneakerImageService.deleteSneakerImages(sneaker.getSneakerImages());
+        sneakerRepository.delete(sneaker);
     }
 
     private Sneaker createSneaker(final SneakerDTO sneakerDTO, final Brand brand) {

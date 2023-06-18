@@ -47,8 +47,8 @@ public class SneakerController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteSneaker(@RequestBody final IdListDTO idListDTO) {
-        sneakerService.deleteSneaker(idListDTO);
+    public ResponseEntity<Void> deleteSneaker(@RequestParam("id") Long sneakerId) {
+        sneakerService.deleteSneaker(sneakerId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
